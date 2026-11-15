@@ -216,7 +216,25 @@ Hai bên không cần dùng chung mã nguồn C#, chỉ cần thống nhất h�
 
 ---
 
-# 5. KẾT LUẬN
+# 5. PHẦN MỞ RỘNG (BƯỚC 9 - XỬ LÝ XUNG ĐỘT 409 VÀ XÓA 204)
+
+Bổ sung các tính năng nâng cao cho `Submission.Api`:
+1. **Chặn nộp bài trùng (`409 Conflict`):** Nếu `StudentCode` đã nộp cho `AssignmentId` đó thì từ chối với mã `409 Conflict` (`DUPLICATE_SUBMISSION`).
+2. **Xóa lượt nộp (`DELETE` trả `204 No Content`):** Thêm endpoint `DELETE /api/submissions/{submissionId:guid}` cho phép xóa lượt nộp.
+
+| STT | Ca thử | Yêu cầu | Kết quả mong đợi | Kết quả thực tế |
+|---|---|---|---|---|
+| 9a | Nộp vào bài tập đã đóng | `POST /api/assignments/3/submissions` | `400 Bad Request` (`ASSIGNMENT_CLOSED`) | Đạt |
+| 9b | Nộp hợp lệ cho `SV002` | `POST /api/assignments/1/submissions` | `201 Created` + `Location` | Đạt |
+| 9c | Nộp trùng lại ca `9b` | Gửi lại y hệt request `9b` | `409 Conflict` (`DUPLICATE_SUBMISSION`) | Đạt |
+| 9d | Xóa lượt nộp `9b` | `DELETE /api/submissions/{id}` | `204 No Content` (không body) | Đạt |
+| 9e | Xóa lại lượt nộp vừa xóa | Gửi lại `DELETE` với `{id}` cũ | `404 Not Found` (`SUBMISSION_NOT_FOUND`) | Đạt |
+| 9f | Nộp lại sau khi rút bài | Gửi lại request `9b` sau khi đã xóa | `201 Created` (cấp `Id` mới) | Đạt |
+| 9g | Chạy `Submission.Client` 2 lần liên tiếp | Lần 1 thành công, lần 2 trùng `SV001` | Lần 1: `201 Created`, Lần 2: `409 Conflict` | Đạt |
+
+---
+
+# 6. KẾT LUẬN
 
 Qua bài thực hành, em đã xây dựng được mô hình giao tiếp Client - Server bằng RESTful API sử dụng ASP.NET Core và HttpClient.
 

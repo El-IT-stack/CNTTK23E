@@ -33,3 +33,46 @@ Content-Type: application/json
   "studentCode": "",
   "repositoryUrl": ""
 }
+
+### [Mo rong 9a] Nop vao bai tap da dong -> 400 ASSIGNMENT_CLOSED
+POST {{api}}/api/assignments/3/submissions
+Content-Type: application/json
+
+{
+  "studentCode": "SV002",
+  "repositoryUrl": "https://github.com/sv002/bai2"
+}
+
+### [Mo rong 9b] Nop hop le cho SV002 -> 201 Created
+# @name submitSv002
+POST {{api}}/api/assignments/1/submissions
+Content-Type: application/json
+
+{
+  "studentCode": "SV002",
+  "repositoryUrl": "https://github.com/sv002/bai2"
+}
+
+### [Mo rong 9c] Gui lai y het 9b (nop trung) -> 409 Conflict (DUPLICATE_SUBMISSION)
+POST {{api}}/api/assignments/1/submissions
+Content-Type: application/json
+
+{
+  "studentCode": "SV002",
+  "repositoryUrl": "https://github.com/sv002/bai2"
+}
+
+### [Mo rong 9d] Xoa luot nop 9b -> 204 No Content
+DELETE {{api}}/api/submissions/{{submitSv002.response.body.$.id}}
+
+### [Mo rong 9e] Xoa lai luot nop da xoa -> 404 Not Found
+DELETE {{api}}/api/submissions/{{submitSv002.response.body.$.id}}
+
+### [Mo rong 9f] Nop lai cho SV002 sau khi da xoa -> 201 Created (id moi)
+POST {{api}}/api/assignments/1/submissions
+Content-Type: application/json
+
+{
+  "studentCode": "SV002",
+  "repositoryUrl": "https://github.com/sv002/bai2"
+}
