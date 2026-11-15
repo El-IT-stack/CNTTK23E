@@ -1,70 +1,112 @@
-# Bài thực hành 2: EduSubmit – Xây dựng hệ thống RESTful API Client-Server
+# BAI 2 - RESTFUL API CHO TUONG TAC CLIENT-SERVER
 
-## 1. Các lệnh đã chạy
+## 1. Thong tin sinh vien
 
-### 1.1. Khởi tạo cấu trúc Solution và Project
-```powershell
-dotnet new sln -n RestfulClientServer
-dotnet new web -n Submission.Api -o src/Submission.Api
-dotnet new console -n Submission.Client -o src/Submission.Client
-dotnet sln add src/Submission.Api/Submission.Api.csproj
-dotnet sln add src/Submission.Client/Submission.Client.csproj
-dotnet new gitignore
-dotnet build
+- Ho ten: Nguyen Doan Thanh Long
+- MSSV: DTC245200327
+- Lop: CNTTK23E
+- Mon hoc: Phat trien ung dung phan tan
+- Ngay thuc hien: 15/11/2026
+
+## 2. Gioi thieu
+
+Bai 2 xay dung he thong **EduSubmit** – He thong nop bai tap qua RESTful API gom hai phan ung dung doc lap (`Submission.Api` va `Submission.Client`).
+
+Du an su dung:
+- .NET SDK (ASP.NET Core Minimal API)
+- C#
+- HTTP va JSON
+- HttpClient
+- REST Client trong VS Code (`requests.http`)
+
+## 3. Cau truc thu muc
+
+```text
+Bai2/
+├── images/
+│   ├── api-running.png
+│   └── client-output.png
+├── RestfulClientServer/
+│   ├── src/
+│   │   ├── Submission.Api/
+│   │   └── Submission.Client/
+│   └── RestfulClientServer.sln
+└── README.md
 ```
 
-### 1.2. Khởi chạy Máy chủ (Submission.Api)
-Mở Terminal 1 tại thư mục gốc `RestfulClientServer`:
+## 4. Chuc nang va Huong dan chay
+
+### Chuc nang API (`Submission.Api`)
+
+- `GET /` : Kiem tra trang thai hoat dong cua API.
+- `GET /api/assignments` : Lay danh sach bai tap.
+- `GET /api/assignments/{id}` : Xem chi tiet mot bai tap.
+- `POST /api/assignments/{id}/submissions` : Nop bai tap moi.
+- `GET /api/submissions/{id}` : Doc lai chi tiet mot luot nop.
+- `DELETE /api/submissions/{id}` : Xoa/Huy mot luot nop.
+
+### Huong dan chay
+
+Mo Terminal thu nhat tai thu muc `RestfulClientServer`:
+
 ```powershell
+dotnet build
 dotnet run --project src/Submission.Api --urls http://localhost:5000
 ```
 
-### 1.3. Khởi chạy Máy khách (Submission.Client)
-Mở Terminal 2 tại thư mục gốc `RestfulClientServer`:
+Mo Terminal thu hai tai thu muc `RestfulClientServer`:
+
 ```powershell
 dotnet run --project src/Submission.Client http://localhost:5000
 ```
 
----
+## 5. Ket qua kiem thu va Bang pha thu (Cac ca 5a - 5h)
 
-## 2. Ảnh kết quả chạy thực tế
+| Ma ca | Chuc nang / Tinh huong | Phuong thuc & Duong dan | HTTP | Ket qua / Ma loi | Danh gia |
+|---|---|---|---|---|---|
+| **5a** | Nop bai hop le cho bai tap dang mo | `POST /api/assignments/1/submissions` | `201` | Created (Tra ve JSON + header `Location`) | Dat |
+| **5b** | Doc lai luot nop qua ID vua tao | `GET /api/submissions/{id}` | `200` | Thanh cong (Tra ve thong tin luot nop) | Dat |
+| **5c** | Truy van bai tap khong ton tai | `GET /api/assignments/999` | `404` | `ASSIGNMENT_NOT_FOUND` | Dat |
+| **5d** | Nop bai vao bai tap khong ton tai | `POST /api/assignments/999/submissions` | `404` | `ASSIGNMENT_NOT_FOUND` | Dat |
+| **5e** | Nop bai vao bai tap da dong | `POST /api/assignments/3/submissions` | `400` | `ASSIGNMENT_CLOSED` | Dat |
+| **5f** | Nop thieu du lieu / du lieu rong | `POST /api/assignments/1/submissions` | `400` | `INVALID_SUBMISSION` | Dat |
+| **5g** | Nop bai trung cho cung sinh vien | `POST /api/assignments/1/submissions` | `409` | `DUPLICATE_SUBMISSION` | Dat |
+| **5h** | Xoa luot nop da tao | `DELETE /api/submissions/{id}` | `204` | No Content (Xoa thanh cong) | Dat |
 
-### 2.1. Máy chủ Submission.Api lắng nghe tại cổng 5000
-![Kết quả chạy API](images/Screenshot 2026-11-14 173502.png)
+## 6. Thi nghiem he thong phan tan
 
-### 2.2. Máy khách Submission.Client thực thi đầy đủ kịch bản 4 bước
-![Kết quả chạy Client](images/Screenshot 2026-11-14 173622.png)
+- Client va Server chay thanh hai tien trinh rieng biet.
+- Client giao tiep voi Server qua giao thuc HTTP.
+- Client gui du lieu dang JSON, Server tra ve ma trang thai HTTP va JSON tuong ung.
+- Khi Server dung hoat dong, Client khong the ket noi va bao loi ket noi.
+- Khi Server khoi dong lai, du lieu luu tam trong RAM (In-Memory) se bi mat.
+- Phuong thuc POST tao ra tai nguyen moi kem dinh danh `Guid` va header `Location`.
+- Co che kiem tra trung giup ngan chan mot sinh vien nop lap lai nhieu lan cho cung mot bai tap (`409 Conflict`).
 
----
+## 7. Tra loi cau hoi ly thuyet
 
-## 3. Bảng phá thử và kiểm thử API (Các ca 5a – 5h)
+### Cau 1: Vi sao URI dung danh tu?
 
-Dưới đây là kết quả kiểm thử toàn diện các tình huống biên và xử lý lỗi thông qua tệp `requests.http`:
+URI dung de dinh danh tai nguyen (vi du: `/api/assignments`, `/api/submissions`), con cac phuong thuc HTTP nhu `GET`, `POST`, `DELETE` the hien hanh dong tac dong len tai nguyen do. Thiet ke nay giup API ro rang, nhat quan va tuan thu dung chuan kien truc REST.
 
-| Mã ca | Tình huống kiểm thử (Test Case) | Phương thức & Đường dẫn | Dữ liệu gửi lên (Payload / Header) | Mã HTTP kỳ vọng | Mã lỗi / Kết quả thực tế | Đánh giá |
-| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| **5a** | Nộp bài hợp lệ cho bài tập đang mở | `POST /api/assignments/1/submissions` | `{"studentCode": "SV001", "repositoryUrl": "https://github.com/sv001/lab"}` | `201 Created` | Trả về JSON kèm `Guid Id`, trạng thái `"received"` và header `Location` | Đạt |
-| **5b** | Đọc lại thông tin lượt nộp qua ID vừa tạo | `GET /api/submissions/{id}` | Không có body (Lấy ID từ header `Location`) | `200 OK` | Trả về đúng thông tin chi tiết lượt nộp của `SV001` | Đạt |
-| **5c** | Truy vấn bài tập không tồn tại | `GET /api/assignments/999` | Không có | `404 Not Found` | `{"code": "ASSIGNMENT_NOT_FOUND", "message": "Khong tim thay bai tap."}` | Đạt |
-| **5d** | Nộp bài vào bài tập không tồn tại | `POST /api/assignments/999/submissions` | `{"studentCode": "SV001", "repositoryUrl": "https://github.com/sv001/lab"}` | `404 Not Found` | `{"code": "ASSIGNMENT_NOT_FOUND", "message": "Khong tim thay bai tap."}` | Đạt |
-| **5e** | Nộp bài vào bài tập đã đóng (`isOpen = false`) | `POST /api/assignments/3/submissions` | `{"studentCode": "SV002", "repositoryUrl": "https://github.com/sv002/lab"}` | `400 Bad Request` | `{"code": "ASSIGNMENT_CLOSED", "message": "Bai tap nay da dong nop bài."}` | Đạt |
-| **5f** | Nộp dữ liệu rỗng / thiếu trường bắt buộc | `POST /api/assignments/1/submissions` | `{"studentCode": "", "repositoryUrl": ""}` | `400 Bad Request` | `{"code": "INVALID_SUBMISSION", "message": "Thieu ma sinh vien hoac link repository."}` | Đạt |
-| **5g** | Nộp trùng bài tập cho cùng một sinh viên | `POST /api/assignments/1/submissions` | `{"studentCode": "SV001", "repositoryUrl": "https://github.com/sv001/lab"}` | `409 Conflict` | `{"code": "DUPLICATE_SUBMISSION", "message": "Sinh vien da nop bai tap nay roi."}` | Đạt |
-| **5h** | Hủy / Xóa lượt nộp đã tạo | `DELETE /api/submissions/{id}` | Không có body | `204 No Content` | Xóa thành công khỏi danh sách, body phản hồi rỗng | Đạt |
+### Cau 2: Stateless the hien o dau?
 
----
+Moi request tu Client gui len mang day du thong tin de Server xu ly doc lap. Vi du `assignmentId` nam tren duong dan URI, con `studentCode` va `repositoryUrl` nam trong JSON body. Server khong luu giu trang thai phien lam viec (session) giua cac lan goi yeu cau truoc do, du lieu bai nop chi duoc luu tru duoi dang tai nguyen trong bo nho Server.
 
-## 4. Trả lời 3 câu hỏi kiến trúc REST
+### Cau 3: Vi sao Client va Server dung DTO rieng?
 
-### Câu 1: Vì sao URI dùng danh từ, còn hành động do phương thức HTTP đảm nhận?
-* **Nguyên lý REST:** REST xem mọi thông tin nghiệp vụ là các **tài nguyên (Resources)**, do đó URI phải là **danh từ số nhiều** để định danh tài nguyên đó (ví dụ: `/api/assignments`, `/api/submissions`).
-* **Vai trò phương thức HTTP:** Các hành động thao tác lên tài nguyên được chuẩn hóa thông qua các động từ sẵn có của giao thức HTTP (`GET` để đọc, `POST` để tạo mới, `PUT/PATCH` để cập nhật, `DELETE` để xóa).
-* **Lợi ích:** Giúp thiết kế API nhất quán, tránh tình trạng sinh ra hàng loạt đường dẫn lộn xộn chứa động từ (như `/getAssignments`, `/submitAssignment`), đồng thời tận dụng được các cơ chế chuẩn của HTTP như caching và tính lũy đẳng (idempotency).
+Client va Server la hai ung dung doc lap giao tiep qua mang bang JSON theo hop dong API (API Contract). Hai ben chi can thong nhat ten thuoc tinh va kieu du lieu de bo tuan tu hoa (`System.Text.Json`) tu dong anh xa, khong can phu thuoc hay dung chung thu vien class C# van trao doi du lieu chinh xac.
 
-### Câu 2: Tính "Stateless" (Phi trạng thái) thể hiện ở đâu trong code đã viết?
-* **Bản chất:** Máy chủ `Submission.Api` không lưu giữ bất kỳ trạng thái phiên làm việc (session) hay ngữ cảnh giao tiếp nào của Client giữa các lần gọi HTTP.
-* **Thể hiện trong mã nguồn:** Trong endpoint `POST /api/assignments/{assignmentId}/submissions`, mọi thông tin cần thiết để máy chủ xử lý yêu cầu (ID bài tập nằm trên đường dẫn URI, mã sinh viên và link repository nằm trong JSON Body) đều được gửi trọn vẹn trong một request duy nhất. Server xử lý độc lập từng request mà không cần biết Client đã gọi những API nào trước đó.
+## 8. Minh chung ket qua chay
 
-### Câu 3: Vì sao Client và Server mỗi bên khai báo DTO riêng mà vẫn khớp nhau?
-* **Tính độc lập trong hệ phân tán:** Client (`Submission.Client`) và Server (`Submission.Api`) là hai tiến trình độc lập, giao tiếp qua mạng bằng bản tin trung gian **JSON** chứ không chia sẻ trực tiếp bộ nhớ hay thư viện mã nguồn C#.
-* **Cơ chế khớp dữ liệu:** Hai bên giao tiếp thông qua **Hợp đồng API (API Contract)**. Miễn là tên các thuộc tính và kiểu dữ liệu khớp nhau theo quy tắc chuyển đổi JSON mặc định (không phân biệt hoa/thường giữa PascalCase của C# và camelCase của JSON), trình tuần tự hóa (`System.Text.Json`) ở hai đầu sẽ tự động ánh xạ dữ liệu chính xác mà vẫn giữ được tính lỏng lẻo (Loosely Coupled) giữa Client và Server.
+Anh ket qua chay thuc te duoc luu trong thu muc `Bai2/images/`:
+
+### May chu Submission.Api chay tai cong 5000
+![Ket qua chay API](images/api-running.png)
+
+### May khach Submission.Client chay kich ban 4 buoc
+![Ket qua chay Client](images/client-output.png)
+
+## 9. Ket luan
+
+Bai thuc hanh minh hoa day du co che giao tiep client-server qua HTTP va JSON, nguyen tac thiet ke RESTful API, su dung DTO doc lap, xu ly cac ma trang thai HTTP chuan (`200`, `201`, `204`, `400`, `404`, `409`) va kiem thu he thong phan tan.
