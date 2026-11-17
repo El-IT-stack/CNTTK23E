@@ -1,6 +1,5 @@
 var builder = WebApplication.CreateBuilder(args);
 
-// Dang ky cac dich vu can thiet (neu can)
 builder.Services.AddEndpointsApiExplorer();
 
 var app = builder.Build();
@@ -69,7 +68,9 @@ var books = new List<Book>
 
 var reservations = new List<ReservationDto>();
 
-// Endpoint goc kiem tra trang thai he thong
+// ====== ENDPOINTS ======
+
+// 0. Kiem tra trang thai he thong
 app.MapGet("/", () => Results.Ok(new
 {
     service = "Library.Api",
@@ -77,6 +78,33 @@ app.MapGet("/", () => Results.Ok(new
     topic = "De tai 20 - He thong thu vien va dat muon sach phan tan",
     version = "1.0.0"
 }));
+
+// 1. GET /books : Tra cuu danh sach tat ca sach
+app.MapGet("/books", () =>
+{
+    lock (syncLock)
+    {
+        var result = books.Select(b => b.ToDto()).ToList();
+        return Results.Ok(result);
+    }
+});
+
+// 2. GET /books/{id} : Tra cuu thong tin chi tiet mot cuon sach
+app.MapGet("/books/{id:int}", (int id) =>
+{
+    lock (syncLock)
+    {
+        var book = books.FirstOrDefault(b => b.Id == id);
+        if (book is null)
+        {
+            return Results.NotFound(new ApiError(
+                "BOOK_NOT_FOUND",
+                "Khong tim thay sach."));
+        }
+
+        return Results.Ok(book.ToDto());
+    }
+});
 
 app.Run();
 
