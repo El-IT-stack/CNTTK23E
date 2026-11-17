@@ -142,7 +142,7 @@ Nếu làm trên web thì bấm **Sync fork → Update branch** ở trang fork.
 ## Hướng dẫn nộp dự án – Phát triển ứng dụng phân tán (CNTT K23E)
 
 ### 1. Quy định chung
-- Dự án kéo dài **8 tuần**. Mỗi tuần nộp vào một thư mục riêng: `Tuan1`, `Tuan2`, … `Tuan8`.
+- Dự án kéo dài **9 tuần**. Mỗi tuần nộp vào một thư mục riêng: `Tuan1`, `Tuan2`, … `Tuan9`.
 - Mỗi sinh viên làm **đúng đề tài đã đăng ký**. Tên thư mục dự án ghi trong bảng ở mục 4, **không tự đặt hoặc đổi tên**.
 - **Hạn nộp Tuần 1 của lớp K23E: 23h59 thứ Ba 17/11/2026.** Sau hạn này Tuần 1 không nhận bài. Hạn các tuần sau sẽ được thông báo.
 
