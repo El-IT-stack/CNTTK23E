@@ -106,6 +106,85 @@ app.MapGet("/books/{id:int}", (int id) =>
     }
 });
 
+// 3. POST /books/{bookId}/reservations : Gui yeu cau dat muon sach
+app.MapPost("/books/{bookId:int}/reservations", (int bookId, CreateReservationRequest request) =>
+{
+    lock (syncLock)
+    {
+        // Kiem tra thu tu 1: Sach co ton tai khong?
+        var book = books.FirstOrDefault(b => b.Id == bookId);
+        if (book is null)
+        {
+            return Results.NotFound(new ApiError(
+                "BOOK_NOT_FOUND",
+                "Khong tim thay sach."));
+        }
+
+        // Kiem tra thu tu 2: Thong tin nguoi dung co hop le khong?
+        if (string.IsNullOrWhiteSpace(request.UserId) || string.IsNullOrWhiteSpace(request.UserName))
+        {
+            return Results.BadRequest(new ApiError(
+                "INVALID_RESERVATION",
+                "Thong tin nguoi dung khong hop le."));
+        }
+
+        // Kiem tra thu tu 3: Sach con ban kha dung khong?
+        if (book.AvailableCopies <= 0)
+        {
+            return Results.BadRequest(new ApiError(
+                "BOOK_UNAVAILABLE",
+                "Sach da het ban kha dung de dat muon."));
+        }
+
+        // Tao yeu cau dat muon moi
+        book.AvailableCopies--; // Cap nhat giam so ban kha dung trong bo nho
+
+        var reservation = new ReservationDto(
+            Id: Guid.NewGuid(),
+            BookId: bookId,
+            UserId: request.UserId.Trim(),
+            UserName: request.UserName.Trim(),
+            Status: ReservationStatus.Pending,
+            RequestedAt: DateTimeOffset.UtcNow
+        );
+
+        reservations.Add(reservation);
+
+        // Tra ve HTTP 201 Created voi header Location
+        return Results.Created($"/reservations/{reservation.Id}", reservation);
+    }
+});
+
+// 4. GET /reservations/{id} : Tra cuu yeu cau dat muon theo Guid
+app.MapGet("/reservations/{id:guid}", (Guid id) =>
+{
+    lock (syncLock)
+    {
+        var reservation = reservations.FirstOrDefault(r => r.Id == id);
+        if (reservation is null)
+        {
+            return Results.NotFound(new ApiError(
+                "RESERVATION_NOT_FOUND",
+                "Khong tim thay yeu cau dat muon."));
+        }
+
+        return Results.Ok(reservation);
+    }
+});
+
+// 5. GET /users/{userId}/reservations : Lay danh sach yeu cau dat muon cua mot nguoi dung
+app.MapGet("/users/{userId}/reservations", (string userId) =>
+{
+    lock (syncLock)
+    {
+        var userReservations = reservations
+            .Where(r => string.Equals(r.UserId, userId, StringComparison.OrdinalIgnoreCase))
+            .ToList();
+
+        return Results.Ok(userReservations);
+    }
+});
+
 app.Run();
 
 // ====== MODELS & DTOS ======
