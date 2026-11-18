@@ -1,3 +1,4 @@
+## Bài PingsignalR
 ## Bước 1: Hoàn thành tạo dự án
 ![build](PingsignalR/picture/buoc1-build.png)
 Thấy: Chạy build thành công.
@@ -32,3 +33,7 @@ Giải thích: Kết nối trả kết quả đúng.
 ![loi1](PingsignalR/picture/buoc7-loi1.png)
 ![loi2](PingsignalR/picture/buoc7-loi2.png)
 ![loi3](PingsignalR/picture/buoc7-loi3.png)
+
+
+## Bài Edusubmission
+
