@@ -17,3 +17,9 @@ Giải thích: Máy chủ đã chạy.
 ![echo](picture/buoc4-echo.png)
 Thấy: Chạy bên máy khách và in ra kết quả.
 Giải thích: Kết nối An đến PingApi thành công.
+
+## Bước 5: In [Echo] cho máy khách
+![nhom](picture/buoc5-nhom.png)
+Thấy: Chạy cả 3 máy và in ra kết quả đúng.
+Giải thích: Cả 3 kết nối điều thành công.
+
