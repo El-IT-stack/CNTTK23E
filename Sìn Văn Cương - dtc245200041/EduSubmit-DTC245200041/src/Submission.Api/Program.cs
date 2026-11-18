@@ -14,6 +14,25 @@ app.MapGet("/", () => Results.Ok(new
     status = "Running"
 }));
 
+app.MapGet("/api/assignments", () => Results.Ok(assignments));
+
+app.MapPost("/api/submissions", (CreateSubmissionRequest request) => {
+    if(request.AssinmentId <= 0 || string.IsNullOrWhiteSpace(request.code) || string.IsNullOrWhiteSpace(request.repo)) {
+        return Results.BadRequest(new {message = "Dữ liệu nộp bài không hợp lệ!"});
+    }
+
+    var submission = new SubmissionResult(
+        Guid.NewGuid(),
+        request.AssinmentId,
+        request.code,
+        "received",
+        DateTimeOffset.UtcNow
+    );
+    
+    return Results.Created($"/api/submissions/{submission.id}",submission);
+});
 
 app.Run();
 record Assignment(int id, string tilte, string description);
+record CreateSubmissionRequest(int AssinmentId, string code, string repo);
+record SubmissionResult(Guid id, int AssinmentId, string code, string status, DateTimeOffset RecuivedAt);
