@@ -25,5 +25,10 @@ Giải thích: Cả 3 kết nối điều thành công.
 
 ## Bước 6: Ket noi lai
 ![noilai](picture/buoc6-noilai.png)
-Thấy: Chạy cả 3 máy và in ra kết quả đúng.
-Giải thích: Cả 3 kết nối điều thành công.
+Thấy: Chạy và test thì nó in ra kết quả cần.
+Giải thích: Kết nối trả kết quả đúng.
+
+## Bước 7: 3 loi
+![loi1](picture/buoc7-loi1.png)
+![loi2](picture/buoc7-loi2.png)
+![loi3](picture/buoc7-loi3.png)
