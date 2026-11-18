@@ -1,5 +1,16 @@
 # HỆ THỐNG ĐẤU GIÁ TRỰC TUYẾN (ONLINE AUCTION SYSTEM)
-### Học phần: Phát triển ứng dụng phân tán - Đề tài 10
+### Học phần: Phát triển ứng dụng phân tán - Đề tài 10 (Tuần 1)
+
+---
+
+## 👤 Thông tin Sinh viên & Đề tài
+* **Họ và tên**: Lầu A Của
+* **Mã sinh viên (MSSV)**: `dtc245200155`
+* **Lớp**: K23.K1.D2.2627.CNTT K23E
+* **Đề tài**: **10 – Hệ thống đấu giá trực tuyến**
+* **Thư mục nộp bài**: `Lầu A Của - dtc245200155/DuAn/DT10_HeThongDauGiaTrucTuyen/Tuan1/`
+* **Mã đề tài đăng ký**: `DT10_HeThongDauGiaTrucTuyen`
+* **Giai đoạn**: Báo cáo & Sản phẩm Tuần 1 (Tuan1)
 
 ---
 
